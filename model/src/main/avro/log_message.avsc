@@ -1,0 +1,43 @@
+{
+  "type": "record",
+  "name": "LogMessage",
+  "namespace": "de.doubleslash.demo.kafka.avro",
+  "doc": "A log message.",
+  "fields": [
+    {
+      "name": "messageId",
+      "type": ["null", "string"],
+      "doc": "Unique ID of this log message."
+    },
+    {
+      "name": "systemId",
+      "type": "string",
+      "doc": "ID of the system the log message originates from."
+    },
+    {
+      "name": "message",
+      "type": "string",
+      "doc": "The log message."
+    },
+    {
+      "name": "stackTrace",
+      "type": ["null", "string"],
+      "doc": "The stack trace of the exception being logged (optional)."
+    },
+    {
+      "name": "logLevel",
+      "type": {
+        "type": "enum",
+        "name": "Level",
+        "symbols": [
+          "TRACE",
+          "DEBUG",
+          "INFO",
+          "WARN",
+          "ERROR",
+          "FATAL"
+        ]
+      }
+    }
+  ]
+}
