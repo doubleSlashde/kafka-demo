@@ -1,3 +1,26 @@
 = Kafka Demo
 
-A demo with Spring Boot applications using Kafka Producer and Kafka Streams API, Avro and Schema Registry.
+Demonstration von Kafka anhand einiger (Spring Boot basierter) Beispielanwendungen.
+
+Die Demonstration zeigt:
+
+ * Kafka Producer
+ * Kafka Streams
+ * Avro (als Datenübertragungsformat innerhalb Kafka)
+ * Schema Registry (zur Veröffentlichung der Avro-Schemata).
+
+== Kafka starten
+
+Eine Docker-Installation vorausgesetzt, können Sie Kafka und die weiteren benötigten Dienste (Zookeeper, Schema Registry etc.) mit der `docker-compose.yml`-Datei im `docker`-Verzeichnis aus starten:
+
+```
+kafka-demo/docker$ docker-compose up --build -d
+```
+
+== Kafka beenden
+
+```
+kafka-demo/docker$ docker-compose down
+```
+
+
