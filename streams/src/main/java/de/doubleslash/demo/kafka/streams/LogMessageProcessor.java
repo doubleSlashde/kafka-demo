@@ -25,8 +25,17 @@ import de.doubleslash.demo.kafka.streams.config.KafkaStreamsConfiguration;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 
 /**
- * Kafka Streams based class that reads log messages from the logging topic. Adds a logMessageId to each message.
- * Log messages with level ERROR are routed to the Kafka topic "logging-alerts", all other messages are routed
+ * Class that reads and processes log messages from the logging topic using the Kafka Streams API. Adds a logMessageId to each message.
+ * Log messages with level ERROR are routed to the Kafka topic "logging-alerts", all other messages are routed to "logging-processed".<p>
+ * <p>
+ * <b>Note:</b>
+ * In this class the {@link KafkaStreams} instance is started and closed explicitly, as described in the
+ * <a href="https://kafka.apache.org/21/documentation/streams/tutorial">Kafka Streams</a> documentation. This is
+ * done intentionally to demonstrate how the Streams API is utilized in a non-Spring application.
+ * <p>
+ * There is a more comfortable way, where running and stopping the streams instance is integrated in the Spring Boot Application lifecycle, and
+ * therefore happens automatically. Please refer to the corresponding
+ * <a href="https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-messaging.html#boot-features-kafka">documentation</a>.
  */
 public class LogMessageProcessor implements AutoCloseable {
 
