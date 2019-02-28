@@ -11,7 +11,7 @@ Die Demonstration zeigt:
 
 == Kafka starten
 
-Eine Docker-Installation vorausgesetzt, können Sie Kafka und die weiteren benötigten Dienste (Zookeeper, Schema Registry etc.) mit der `docker-compose.yml`-Datei im `docker`-Verzeichnis aus starten:
+Eine Docker-Installation vorausgesetzt, können Sie Kafka und die weiteren benötigten Dienste (Zookeeper, Schema Registry etc.) mit der `docker-compose.yml`-Datei vom `docker`-Verzeichnis aus starten:
 
 ```
 kafka-demo/docker$ docker-compose up --build -d
@@ -19,8 +19,102 @@ kafka-demo/docker$ docker-compose up --build -d
 
 == Kafka beenden
 
+Kafka und die zugehörigen Dienste werden beendet mit dem Befehl (ebenfalls im `docker`-Verzeichnis auszuführen):
+
 ```
 kafka-demo/docker$ docker-compose down
 ```
 
+== Das Projekt bauen
 
+Das Projekt wird mit Maven (d.h. dem Maven-Wrapper) folgendendermaßen gebaut:
+
+```
+kafka-demo$ mvnw install
+```
+
+Unter Windows ist statt `mvnw` jeweils `mvnw.cmd` zu verwenden. Dies gilt auch für alle nachfolgend gezeigten Maven-Kommandos.
+
+== Die Demoanwendungen
+
+Fachlich drehen sich die Demoanwendungen um das Thema "Logging". Im Anwendungs-Szenario schreiben alle IT-Systeme eines Unternehmens ihre Lognachrichten in das Topic `logging` eines Kafka-Clusters, z.B. mittels eines `KafkaAppenders`.
+
+Letzterer spielt in dieser Demo jedoch keine Rolle; stattdessen werden Lognachrichten im Modul `producer` zufällig erzeugt und über einen Kafka-Producer nach Kafka geschrieben.
+
+Eine Java-Anwendung verarbeitet die Lognachrichten mithilfe der Kafka-Streams-API weiter. Jede Lognachricht bekommt vom `LogMessageProcessor` eine UUID. Anschließend werden alle Nachrichten mit Log-Level ERROR in das Kafka-Topic `logging-alerts` geschrieben. Alle anderen Lognachrichten landen im Topic `logging-processed`.
+
+== Vorbereitung
+
+Damit die Anwendungen auf den Kafka-Broker und die Schema-Registry im Docker-Container zugreifen können muss einmalig ein Eintrag in der `/etc/hosts` hinzugefügt werden (unter Windos: `C:\Windows\System32\drivers\etc\hosts`, Bearbeitung im Administrator-Modus). Folgender Eintrag gilt für Linux sowie Doker Desktop unter Windows 10:
+
+```
+# Kafka-Demo (Docker)
+127.0.0.1          kafka
+```
+
+Wer noch mit Windows 7 und der Docker Toolbox arbeitet, muss die IP-Adresse der Docker-VM angeben. In der Regel ist dies:
+
+```
+# Kafka-Demo (Docker)
+192.168.99.100     kafka
+```
+
+== Producer
+
+Die Spring-Boot-Anwendung  `KafkaProducerDemoApp` im Modul `producer` erzeugt  zufällige Lognachrichten und schreibt diese nach Kafka in das Topic: `logging`.
+
+=== Producer-Demo starten
+
+Führen Sie im `producer`-Verzeichnis den folgenden Befehl aus:
+
+```
+kafka-demo/producer$ ../mvnw spring-boot:run
+```
+
+== Streams
+
+Die Spring-Boot-Anwendung  `KafkaStreamsDemoApp` im Modul `streams` verarbeitet die Lognachrichten aus dem Topic `logging` mithilfe der Kafka-Streams-API. Jede Lognachricht bekommt eine UUID. Anschließend werden alle Nachrichten mit Log-Level ERROR in das Kafka-Topic `logging-alerts` geschrieben. Alle anderen Lognachrichten landen im Topic `logging-processed`.
+
+=== Streams-Demo starten
+
+Führen Sie im `streams`-Verzeichnis den folgenden Befehl aus:
+
+```
+kafka-demo/streams$ ../mvnw spring-boot:run
+```
+
+=== Demo-Anwendungen beenden
+
+Die Demoanwendungen werden in der Konsole in der sie laufen mit der Tastenkombination `Strg-C` beendet.
+
+== Lognachrichten in Kafka inspizieren
+
+Um die nach Kafka geschriebenen Lognachrichten zu sehen können Sie wie folgt vorgehen:
+
+*Kafka Console-Consumer (Docker-Container)*
+
+Sie öffnen eine Bash im Kafka-Container und lassen sich die Nachrichten eines Topics wie folgt ausgeben:
+
+```
+kafka-demo/producer$ docker exec -it kafka bash
+root@kafka:/# /usr/bin/kafka-console-consumer --bootstrap-server localhost:9092 \
+   --topic logging --from-beginning
+```
+
+Gleichermaßen können Sie sich die Inhalte der anderen Topics anzeigen lassen, indem Sie für den Parameter `--topic` statt `logging` das Topic `logging-processed` oder `logging-alerts` angeben.
+
+*Kafka Topics UI*
+
+Alternativ öffnen Sie in einem Browser die URL `http://kafka:8000/`. Wählen Sie das gewünschte Topic, um dessen Inhalt zu inspizieren.
+
+== Schema Registry
+
+Als Datenübertragungsformat für die Lognachrichten in Kafka wird https://avro.apache.org/[Avro] verwendet.
+Bei Nutzung von Avro ist ein Schema für die zu übertragenden Datentypen zwingend erforderlich.
+
+Dieses Schema wird sowohl für die Serialisierung beim Schreiben nach Kafka, als auch für die Deserialisierung beim Lesen aus Kafka benötigt. Der Kafka-Producer schreibt das Schema, sofern dort noch nicht vorhanden, in die Schema-Registry. Von dort holen sich die Consumer, wie z.B. unsere Streams-Demoapplikation das Schema, damit sie wissen wie die Daten deserialisiert werden müssen.
+
+Das Ganze geschieht vollautomatisch; man braucht sich nicht darum zu kümmern - lediglich in der Konfiguration der Anwendung muss die URL zur Schema Registry konfiguriert sein.
+
+Die in der Schema Registry registrierten Schemata können Sie sich in der Schema-Registry-UI anschauen.
+Dazu öffnen Sie in einem Browser die URL http://kafka:8001/.
