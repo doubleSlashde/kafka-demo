@@ -14,9 +14,9 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Value;
 
 import de.doubleslash.demo.kafka.avro.LogMessage;
-import de.doubleslash.demo.kafka.producer.config.KafkaProducerConfiguration;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 
 /**
@@ -30,17 +30,8 @@ public class LogMessageKafkaProducer {
 
     private final CountDownLatch latch = new CountDownLatch(1);
 
-    public LogMessageKafkaProducer(KafkaProducerConfiguration kafkaConfig) {
-        this.producer = new KafkaProducer<>(createProperties(kafkaConfig));
-    }
-
-    private Properties createProperties(KafkaProducerConfiguration kafkaConfig) {
-        Properties properties = new Properties();
-        properties.put(BOOTSTRAP_SERVERS_CONFIG, kafkaConfig.getKafkaBootstrapServers());
-        properties.put(SCHEMA_REGISTRY_URL_CONFIG, kafkaConfig.getSchemaRegistryUrls());
-        properties.put(KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        properties.put(VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class.getName());
-        return properties;
+    public LogMessageKafkaProducer(Properties producerProperties) {
+        this.producer = new KafkaProducer<>(producerProperties);
     }
 
     void produce(LogMessage logMessage) {
