@@ -9,6 +9,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.KafkaListener;
 
+/**
+ * Kafka Consumer listening to the logging-count topic.
+ * <p>
+ * This class uses the kafka integration of Spring Boot.
+ */
 @EnableKafka
 @SpringBootApplication
 public class KafkaSpringConsumerDemoApp {

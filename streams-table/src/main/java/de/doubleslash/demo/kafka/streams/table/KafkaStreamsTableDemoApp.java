@@ -32,11 +32,15 @@ import de.doubleslash.demo.kafka.avro.LogMessage;
 import io.confluent.kafka.streams.serdes.avro.GenericAvroSerde;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 
+/**
+ * Kafka Streams demo showing a {@link KTable} that counts the number of log messages for each log level.
+ * <p>
+ * This class utilizes the kafka integration for spring (start and stop/close of
+ * {@link org.apache.kafka.streams.KafkaStreams} transparently managed by the Spring Boot Lifecycle).
+ */
 @EnableKafkaStreams
 @SpringBootApplication
 public class KafkaStreamsTableDemoApp {
-
-    private static final Logger LOG = LoggerFactory.getLogger(KafkaStreamsTableDemoApp.class);
 
     @Value("${kafka.bootstrap.servers}")
     private String kafkaBootstrapServers;
