@@ -73,7 +73,12 @@ kafka-demo/producer$ ../mvnw spring-boot:run
 
 == Streams
 
-Die Spring-Boot-Anwendung  `KafkaStreamsDemoApp` im Modul `streams` verarbeitet die Lognachrichten aus dem Topic `logging` mithilfe der Kafka-Streams-API. Jede Lognachricht bekommt eine UUID. Anschließend werden alle Nachrichten mit Log-Level ERROR in das Kafka-Topic `logging-alerts` geschrieben. Alle anderen Lognachrichten landen im Topic `logging-processed`.
+Die Spring-Boot-Anwendung  `KafkaStreamsDemoApp` im Modul `streams` verarbeitet die Lognachrichten aus dem Topic `logging` mithilfe der Kafka-Streams-API.
+Jede Lognachricht bekommt eine UUID.
+Anschließend werden alle Nachrichten mit Log-Level ERROR in das Kafka-Topic `logging-alerts` geschrieben.
+Alle anderen Lognachrichten landen im Topic `logging-processed`.
+
+Diese Anwendung verwendet zu Demonstrationszwecken _nicht_ die Spring-Integration; das Starten und Stoppen des Streams geschieht über explizite Methodenaufrufe in der Anwendungsklasse, gemäß der Implementierung in Nicht-Spring-Anwendungen.
 
 === Streams-Demo starten
 
@@ -83,9 +88,58 @@ Führen Sie im `streams`-Verzeichnis den folgenden Befehl aus:
 kafka-demo/streams$ ../mvnw spring-boot:run
 ```
 
+=== Streams-Table
+
+Die Anwendung `KafkaStreamsTableDemoApp` im Modul `streams-table` zeigt zum einen die Verwendung einer Tabelle (`KTable`), und zum anderen das Auslesen der Daten aus dem Store, welcher der Tabelle zugrunde liegt.
+
+Die Applikation verarbeitet ebenfalls die Nachrichten aus dem Topic `logging`.
+In einer Tabelle wird die Anzahl aufgetretener Lognachrichten je Loglevel folgendermaßen gezählt:
+
+|===
+| Loglevel | Anzahl Nachrichten
+
+|DEBUG
+|12747
+
+|ERROR
+|8465
+
+|INFO
+|147859
+
+|WARN
+|42286
+|===
+
+Die Tabelle mit den Zählerstände wird zudem wieder in einen Stream umgewandelt, der in das Kafka-Topic `logging-counts` schreibt.
+
+Der `LogMessageCounterRestController` liest die Daten aus dem Store und liefert die jeweils aktuellen Zählerstände im JSON-Format zurück.
+Der REST-Service liefert die Zählerdaten über die URL `http://localhost:8080/logging/counts` zurück.
+
+Im Gegensatz zum Beispiel im Modul `streams` wird hier Kafka Streams mit Spring-Integration verwendet.
+Das Vorhandensein einer `@Bean` vom Typ `KStream` und entsprechender Konfiguration ist bereits ausreichend; das Starten und Stoppen/Aufräumen des Streams geschieht automatisch über den Lebenszyklus der Spring Boot Application.
+
+=== Streams-Table-Demo starten
+
+```
+kafka-demo/streams-table$ ../mvnw spring-boot:run
+```
+
+=== Consumer
+
+Die `KafkaSpringConsumerDemoApp` im Modul `consumer` zeigt, mit wie wenig Code man für das Konsumieren von Nachrichten auskommt, wenn man die Spring-Integration für Kafka nutzt.
+
+Die Anwendung liest die Nachrichten aus dem Topic `logging-counts` und loggt diese aus.
+
+=== Consumer-Demo starten
+
+```
+kafka-demo/consumer$ ../mvnw spring-boot:run
+```
+
 === Demo-Anwendungen beenden
 
-Die Demoanwendungen werden in der Konsole in der sie laufen mit der Tastenkombination `Strg-C` beendet.
+Die Demoanwendungen werden in der Konsole, in der sie laufen, mit der Tastenkombination `Strg-C` beendet.
 
 == Lognachrichten in Kafka inspizieren
 

@@ -10,7 +10,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.KafkaListener;
 
 /**
- * Kafka Consumer listening to the logging-count topic.
+ * Kafka Consumer listening to the logging-counts topic.
  * <p>
  * This class uses the kafka integration of Spring Boot.
  */
@@ -33,7 +33,7 @@ class LogMessageCountConsumer {
 
     Logger LOG = LoggerFactory.getLogger(LogMessageCountConsumer.class);
 
-    @KafkaListener(topics = "logging-count")
+    @KafkaListener(topics = "logging-counts")
     public void consumeMessage(ConsumerRecord<String, Long> record) {
         LOG.info("{} => {}", record.key(), record.value());
     }

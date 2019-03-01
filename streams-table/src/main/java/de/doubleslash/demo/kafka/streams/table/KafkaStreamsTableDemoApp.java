@@ -18,8 +18,7 @@ import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.state.KeyValueStore;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -27,6 +26,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.annotation.KafkaStreamsDefaultConfiguration;
 import org.springframework.kafka.config.KafkaStreamsConfiguration;
+import org.springframework.kafka.config.StreamsBuilderFactoryBean;
 
 import de.doubleslash.demo.kafka.avro.LogMessage;
 import io.confluent.kafka.streams.serdes.avro.GenericAvroSerde;
@@ -42,11 +42,16 @@ import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 @SpringBootApplication
 public class KafkaStreamsTableDemoApp {
 
+    static final String STORE_NAME = "counts-store";
+
     @Value("${kafka.bootstrap.servers}")
     private String kafkaBootstrapServers;
 
     @Value("${kafka.schema.registry.urls}")
     private String schemaRegistryUrls;
+
+    @Autowired
+    StreamsBuilderFactoryBean streamsBuilderFactoryBean;
 
     @Bean(name = KafkaStreamsDefaultConfiguration.DEFAULT_STREAMS_CONFIG_BEAN_NAME)
     public KafkaStreamsConfiguration streamsConfig() {
@@ -61,13 +66,15 @@ public class KafkaStreamsTableDemoApp {
 
     @Bean
     KStream kafkaStream(StreamsBuilder streamsBuilder, SpecificAvroSerde<LogMessage> logMessageSerde) {
+        // Table holding count of log messages for each log level
+        // and materialized in a kafka store
         KTable<String, Long> countTable = streamsBuilder.stream("logging",
                 Consumed.with(Serdes.String(), logMessageSerde))
                 .groupBy( (key, value) -> value.getLogLevel().toString() )
-                .count(Materialized.<String, Long, KeyValueStore<Bytes, byte[]>>as("counts-store"));
+                .count(Materialized.<String, Long, KeyValueStore<Bytes, byte[]>>as(STORE_NAME));
 
         KStream<String, Long> countStream = countTable.toStream();
-        countStream.to("logging-count", Produced.with(Serdes.String(), Serdes.Long()));
+        countStream.to("logging-counts", Produced.with(Serdes.String(), Serdes.Long()));
 
         return countStream;
     }
