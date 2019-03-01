@@ -19,9 +19,9 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.Produced;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 
 import de.doubleslash.demo.kafka.avro.LogMessage;
-import de.doubleslash.demo.kafka.streams.config.KafkaStreamsConfiguration;
 import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
 
 /**
@@ -41,15 +41,15 @@ public class LogMessageProcessor implements AutoCloseable {
 
     private Logger log = LoggerFactory.getLogger(LogMessageProcessor.class);
 
-    private final KafkaStreamsConfiguration kafkaStreamsConfig;
+    @Value("${kafka.bootstrap.servers}")
+    private String kafkaBootstrapServers;
+
+    @Value("${kafka.schema.registry.urls}")
+    private String schemaRegistryUrls;
 
     private CountDownLatch latch;
 
     private KafkaStreams streams;
-
-    public LogMessageProcessor(KafkaStreamsConfiguration kafkaStreamsConfig) {
-        this.kafkaStreamsConfig = kafkaStreamsConfig;
-    }
 
     void start() {
         log.info("Starting LogMessageProcessor.");
@@ -93,8 +93,8 @@ public class LogMessageProcessor implements AutoCloseable {
     private Properties streamsProperties() {
         Properties props = new Properties();
         props.put(StreamsConfig.APPLICATION_ID_CONFIG, "kafka-demo-streams");
-        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaStreamsConfig.getKafkaBootstrapServers());
-        props.put(SCHEMA_REGISTRY_URL_CONFIG, kafkaStreamsConfig.getSchemaRegistryUrls());
+        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServers);
+        props.put(SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrls);
 
         return props;
     }
@@ -107,7 +107,7 @@ public class LogMessageProcessor implements AutoCloseable {
     }
 
     private Map<String, String> serdeConfig() {
-        return singletonMap(SCHEMA_REGISTRY_URL_CONFIG, kafkaStreamsConfig.getSchemaRegistryUrls());
+        return singletonMap(SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrls);
     }
 
     private void initLatch() {
