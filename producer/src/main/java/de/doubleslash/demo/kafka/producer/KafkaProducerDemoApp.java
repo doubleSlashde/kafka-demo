@@ -38,7 +38,6 @@ public class KafkaProducerDemoApp {
 		return properties;
 	}
 
-
 	@Bean
 	LogMessageKafkaProducer logMessageKafkaProducer(Properties producerProperties) {
 		return new LogMessageKafkaProducer(producerProperties);
