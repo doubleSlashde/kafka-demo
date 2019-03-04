@@ -60,6 +60,7 @@ public class KafkaStreamsTableDemoApp {
         config.put(BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServers);
         config.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
         config.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, GenericAvroSerde.class.getName());
+        config.put(StreamsConfig.APPLICATION_SERVER_CONFIG, "localhost:8080");
         config.put(SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrls);
         return new KafkaStreamsConfiguration(config);
     }

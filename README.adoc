@@ -153,6 +153,8 @@ Die Tabelle mit den Zählerstände wird zudem wieder in einen Stream umgewandelt
 Der `LogMessageCounterRestController` liest die Daten aus dem Store und liefert die jeweils aktuellen Zählerstände im JSON-Format zurück.
 Der REST-Service liefert die Zählerdaten über die URL `http://localhost:8080/logging/counts` zurück.
 
+Über die URL `http://localhost:8080/logging/store` kann man sich die Informationen zum Store ausgeben lassen.
+
 Im Gegensatz zum Beispiel im Modul `streams` wird hier Kafka Streams mit Spring-Integration verwendet.
 Das Vorhandensein einer `@Bean` vom Typ `KStream` und entsprechender Konfiguration ist bereits ausreichend; das Starten und Stoppen/Aufräumen des Streams geschieht automatisch über den Lebenszyklus der Spring Boot Application.
 
