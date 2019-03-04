@@ -4,4 +4,4 @@ __  ,<  _  __ `/_  /_ __  //_/  __ `/    __  / / /  _ \_  __ `__ \  __ \
 _  /| | / /_/ /_  __/ _  ,<  / /_/ /     _  /_/ //  __/  / / / / / /_/ /
 /_/ |_| \__,_/ /_/    /_/|_| \__,_/      /_____/ \___//_/ /_/ /_/\____/
 
-===< Kafka Producer Demo >===< Spring Boot${spring-boot.formatted-version} >===
+===< Kafka LogMessage Producer Demo >===< Spring Boot${spring-boot.formatted-version} >===
