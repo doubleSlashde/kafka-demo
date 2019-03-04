@@ -10,6 +10,8 @@ Die Demonstration zeigt:
  * Avro (als Datenübertragungsformat innerhalb Kafka)
  * Schema Registry (zur Veröffentlichung der Avro-Schemata).
 
+:toc:
+
 == Kafka starten
 
 Eine Docker-Installation vorausgesetzt, können Sie Kafka und die weiteren benötigten Dienste (Zookeeper, Schema Registry etc.) mit der `docker-compose.yml`-Datei vom `docker`-Verzeichnis aus starten:
@@ -38,7 +40,7 @@ Unter Windows ist statt `mvnw` jeweils `mvnw.cmd` zu verwenden. Dies gilt auch f
 
 == Die Demoanwendungen
 
-Fachlich drehen sich die Demoanwendungen um das Thema "Logging". Im Anwendungs-Szenario schreiben alle IT-Systeme eines Unternehmens ihre Lognachrichten in das Topic `logging` eines Kafka-Clusters, z.B. mittels eines `KafkaAppenders`.
+Fachlich drehen sich die Demoanwendungen um das Thema "Logging". Sie beschreiben ein Szenario, in dem alle IT-Systeme eines Unternehmens ihre Lognachrichten in das Topic `logging` eines Kafka-Clusters schreiben, z.B. mittels eines `KafkaAppenders`.
 
 Letzterer ist Teil des Logging-Frameworks und spielt in dieser Demo keine Rolle.
 Stattdessen werden Lognachrichten im Modul `producer` zufällig erzeugt und über einen Kafka-Producer nach Kafka geschrieben.
@@ -67,6 +69,34 @@ Wer noch mit Windows 7 und der Docker Toolbox arbeitet, muss die IP-Adresse der 
 ```
 
 == Producer
+
+=== Producer-Demo mit Kafka Template
+
+Die Anwendung `KafkaTemplateProducerDemoApp` schreibt zufällig generierte Nachrichten in das Kafka-Topic `kafka-demo`.
+Sie nutzt dafür das `KafkaTemplate`, das Teil der Kafka-Spring-Integration `spring-kafka` ist.
+
+=== Producer-Demo starten
+
+Führen Sie im `producer-demo`-Verzeichnis den folgenden Befehl aus:
+
+```
+kafka-demo/producer-demo$ ../mvnw spring-boot:run
+```
+
+=== Consumer-Demo mit Kafka Listener
+
+Die `KafkaSpringConsumerDemoApp` im Modul `consumer` zeigt, mit wie wenig Code man für das Konsumieren von Nachrichten auskommt, wenn man die Spring-Integration für Kafka (hier: `@KafkaListener`) nutzt.
+Die Anwendung liest die Nachrichten aus dem Topic `logging-demo` und loggt diese aus.
+
+=== Consumer-Demo starten
+
+Führen Sie im `consumer`-Verzeichnis den folgenden Befehl aus:
+
+```
+kafka-demo/consumer$ ../mvnw spring-boot:run
+```
+
+=== Producer-Logging
 
 Die Spring-Boot-Anwendung `KafkaLogMessageProducerDemoApp` im Modul `producer-logging` erzeugt  zufällige Lognachrichten und schreibt diese nach Kafka in das Topic: `logging`.
 
@@ -126,22 +156,15 @@ Der REST-Service liefert die Zählerdaten über die URL `http://localhost:8080/l
 Im Gegensatz zum Beispiel im Modul `streams` wird hier Kafka Streams mit Spring-Integration verwendet.
 Das Vorhandensein einer `@Bean` vom Typ `KStream` und entsprechender Konfiguration ist bereits ausreichend; das Starten und Stoppen/Aufräumen des Streams geschieht automatisch über den Lebenszyklus der Spring Boot Application.
 
+*Wichtig:*
+In einem echten System hätte man mehrere Instanzen der Streaming-Anwendung.
+Da der Store hinter der `KTable` lokal ist, gibt der REST-Service lediglich die Zählerstände der in dieser Instanz verarbeiteten Nachrichten zurück.
+Wollte man bei mehreren Instanzen die Summe der verarbeiteten Nachrichten insgesamt haben, müsste man alle Instanzen anfragen und die Ergebnisse anschließend aufsummieren.
+
 === Streams-Table-Demo starten
 
 ```
 kafka-demo/streams-table$ ../mvnw spring-boot:run
-```
-
-=== Consumer
-
-Die `KafkaSpringConsumerDemoApp` im Modul `consumer` zeigt, mit wie wenig Code man für das Konsumieren von Nachrichten auskommt, wenn man die Spring-Integration für Kafka nutzt.
-
-Die Anwendung liest die Nachrichten aus dem Topic `logging-counts` und loggt diese aus.
-
-=== Consumer-Demo starten
-
-```
-kafka-demo/consumer$ ../mvnw spring-boot:run
 ```
 
 === Demo-Anwendungen beenden
