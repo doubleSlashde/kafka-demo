@@ -1,6 +1,6 @@
 = Kafka Demo
 
-Demonstration von Kafka anhand einiger (Spring Boot basierter) Beispielanwendungen.
+Demonstration von Kafka 2.1 anhand einiger (Spring Boot basierter) Beispielanwendungen.
 
 Die Demonstration zeigt:
 
@@ -10,7 +10,7 @@ Die Demonstration zeigt:
  * Avro (als Datenübertragungsformat innerhalb Kafka)
  * Schema Registry (zur Veröffentlichung der Avro-Schemata).
 
-:toc:
+*Voraussetzung:* Java JDK 1.8 (oder höher)
 
 == Kafka starten
 
