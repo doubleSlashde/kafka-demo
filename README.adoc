@@ -5,6 +5,7 @@ Demonstration von Kafka anhand einiger (Spring Boot basierter) Beispielanwendung
 Die Demonstration zeigt:
 
  * Kafka Producer
+ * Kafka Consumer
  * Kafka Streams
  * Avro (als Datenübertragungsformat innerhalb Kafka)
  * Schema Registry (zur Veröffentlichung der Avro-Schemata).
