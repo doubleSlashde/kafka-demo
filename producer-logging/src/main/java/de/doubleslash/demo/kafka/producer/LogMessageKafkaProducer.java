@@ -13,7 +13,7 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import de.doubleslash.demo.kafka.avro.LogMessage;
 
 /**
- * Writes log messages to Kafka.
+ * Writes log messages to Kafka using the {@link Producer} class. Does <b>not</b> use Spring Boot Kafka integration support.
  */
 public class LogMessageKafkaProducer {
 

@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Bean;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 
 @SpringBootApplication
-public class KafkaProducerDemoApp {
+public class KafkaLogMessageProducerDemoApp {
 
 	private static final String LOG_MSG_GENERATOR_BEAN_NAME = "generator";
 
@@ -57,7 +57,7 @@ public class KafkaProducerDemoApp {
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(KafkaProducerDemoApp.class, args);
+		SpringApplication.run(KafkaLogMessageProducerDemoApp.class, args);
 	}
 
 }

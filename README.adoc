@@ -39,7 +39,13 @@ Unter Windows ist statt `mvnw` jeweils `mvnw.cmd` zu verwenden. Dies gilt auch f
 
 Fachlich drehen sich die Demoanwendungen um das Thema "Logging". Im Anwendungs-Szenario schreiben alle IT-Systeme eines Unternehmens ihre Lognachrichten in das Topic `logging` eines Kafka-Clusters, z.B. mittels eines `KafkaAppenders`.
 
-Letzterer spielt in dieser Demo jedoch keine Rolle; stattdessen werden Lognachrichten im Modul `producer` zufällig erzeugt und über einen Kafka-Producer nach Kafka geschrieben.
+Letzterer ist Teil des Logging-Frameworks und spielt in dieser Demo keine Rolle.
+Stattdessen werden Lognachrichten im Modul `producer` zufällig erzeugt und über einen Kafka-Producer nach Kafka geschrieben.
+
+Für die Datenübertragung der Lognachrichten in Kafka wird das Avro-Schema `LogMessage` aus dem Modul `model` verwendet.
+Dort definiert das Avro-Schema `log_message.avsc` die Datenstruktur für Lognachrichten.
+Während des Kompiliervorangs des Moduls `model` wird aus dem Schema die Klasse `de.doubleslash.demo.kafka.avro.LogMessage` generiert.
+Diese landet im Verzeichnis `kafka-demo/model/target/generated-sources/avro`.
 
 Eine Java-Anwendung verarbeitet die Lognachrichten mithilfe der Kafka-Streams-API weiter. Jede Lognachricht bekommt vom `LogMessageProcessor` eine UUID. Anschließend werden alle Nachrichten mit Log-Level ERROR in das Kafka-Topic `logging-alerts` geschrieben. Alle anderen Lognachrichten landen im Topic `logging-processed`.
 
@@ -61,14 +67,14 @@ Wer noch mit Windows 7 und der Docker Toolbox arbeitet, muss die IP-Adresse der 
 
 == Producer
 
-Die Spring-Boot-Anwendung  `KafkaProducerDemoApp` im Modul `producer` erzeugt  zufällige Lognachrichten und schreibt diese nach Kafka in das Topic: `logging`.
+Die Spring-Boot-Anwendung `KafkaLogMessageProducerDemoApp` im Modul `producer-logging` erzeugt  zufällige Lognachrichten und schreibt diese nach Kafka in das Topic: `logging`.
 
-=== Producer-Demo starten
+=== Demoanwendung Producer-Logging starten
 
-Führen Sie im `producer`-Verzeichnis den folgenden Befehl aus:
+Führen Sie im `producer-logging`-Verzeichnis den folgenden Befehl aus:
 
 ```
-kafka-demo/producer$ ../mvnw spring-boot:run
+kafka-demo/producer-logging$ ../mvnw spring-boot:run
 ```
 
 == Streams
