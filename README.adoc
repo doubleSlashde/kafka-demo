@@ -8,7 +8,8 @@ Die Demonstration zeigt:
  * Kafka Consumer
  * Kafka Streams
  * Avro (als Datenübertragungsformat innerhalb Kafka)
- * Schema Registry (zur Veröffentlichung der Avro-Schemata).
+ * Schema Registry (zur Veröffentlichung der Avro-Schemata)
+ * KSQL (SQL-basiertes Stream Processing via Kommandozeile)
 
 *Voraussetzung:* Java JDK 1.8 (oder höher)
 
@@ -204,3 +205,47 @@ Das Ganze geschieht vollautomatisch; man braucht sich nicht darum zu kümmern - 
 
 Die in der Schema Registry registrierten Schemata können Sie sich in der Schema-Registry-UI anschauen.
 Dazu öffnen Sie in einem Browser die URL http://kafka:8001/.
+
+== KSQL
+
+Die folgenden Kommandos zeigen, wie man mit KSQL auf der Kommandozeile in einer SQL-ähnlichen Syntax, ganz ohne Programmierung, Daten aus einem Kafka-Topic verarbeiten kann.
+
+Die von der `KafkaLogMessageProducerDemoApp` produzierten Loganachrichten werden aus dem Topic `logging` gelesen.
+Die Lognachrichten mit Loglevel ERROR werden dann in ein neues Topic namens `ERROR_LOGS` geschrieben.
+
+*Voraussetzungen*
+
+* `docker-compose` muss mit den Diensten `kafka`, `ksql-server` und `ksql-cli` gestartet sein.
+* Die `KafkaLogMessageProducerDemoApp` muss laufen
+
+* Hinweis *
+
+Da KSQL alle Eingaben als Großschreibung interpretiert, müssen Namen von Kafka-Topics, die Kleinbuchstaben enthalten in Anführungszeichen (single quotes `'`) stehen.
+
+```
+-- Eine bash im `ksql-cli` Dockercontainer öffnen
+$ docker exec -it ksql-cli bash
+
+-- KSQL Command Line Interface starten
+$ ksql http://ksql-server:8088
+
+-- Topic 'logging' ausgeben (abbrechen mit Strg+C)
+ksql> print 'logging';
+
+-- Input-Stream erzeugen der aus Topic 'logging' liest
+ksql> create stream logstream with (kafka_topic='logging', value_format='AVRO');
+
+-- Stream erzeugen, der nur Lognachrichten mit Loglevel ERROR enthält
+ksql> create stream error_logs as select loglevel, message from logstream where loglevel='ERROR';
+
+-- Inhalt des Streams ausgeben  (abbrechen mit Strg+C)
+ksql> select * from error_logs;
+
+-- Kafka-Topics anzeigen lassen => Neues Topic ERROR_LOGS wurde angelegt
+ksql> show topics;
+
+-- Inhalt des Topics ERROR_LOGS ausgeben lassen  (abbrechen mit Strg+C)
+ksql> print ERROR_LOGS;
+```
+
+Nun kann man sich die Nachrichten des neuen Topics `ERROR_LOGS` auch mit dem `kafka-console-consumer` ausgeben lassen (s.o.).
