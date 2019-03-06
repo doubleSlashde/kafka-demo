@@ -218,7 +218,7 @@ Die Lognachrichten mit Loglevel ERROR werden dann in ein neues Topic namens `ERR
 * `docker-compose` muss mit den Diensten `kafka`, `ksql-server` und `ksql-cli` gestartet sein.
 * Die `KafkaLogMessageProducerDemoApp` muss laufen
 
-* Hinweis *
+*Hinweis*
 
 Da KSQL alle Eingaben als Großschreibung interpretiert, müssen Namen von Kafka-Topics, die Kleinbuchstaben enthalten in Anführungszeichen (single quotes `'`) stehen.
 
