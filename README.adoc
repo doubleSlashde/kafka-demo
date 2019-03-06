@@ -216,7 +216,7 @@ Die Lognachrichten mit Loglevel ERROR werden dann in ein neues Topic namens `ERR
 *Voraussetzungen*
 
 * `docker-compose` muss mit den Diensten `kafka`, `ksql-server` und `ksql-cli` gestartet sein.
-* Die `KafkaLogMessageProducerDemoApp` muss laufen
+* Die `KafkaLogMessageProducerDemoApp` muss laufen.
 
 *Hinweis*
 
