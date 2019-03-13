@@ -19,8 +19,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 public class KafkaSpringConsumerDemoApp {
 
     @Bean
-    LogMessageCountConsumer consumer() {
-        return new LogMessageCountConsumer();
+    KafkaConsumer consumer() {
+        return new KafkaConsumer();
     }
 
     public static void main(String[] args) {
@@ -29,9 +29,9 @@ public class KafkaSpringConsumerDemoApp {
 
 }
 
-class LogMessageCountConsumer {
+class KafkaConsumer {
 
-    Logger LOG = LoggerFactory.getLogger(LogMessageCountConsumer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(KafkaConsumer.class);
 
     @KafkaListener(topics = "kafka-demo")
     public void consumeMessage(ConsumerRecord<String, String> record) {
