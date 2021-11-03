@@ -14,7 +14,8 @@
 
   <groupId>de.doubleslash.demo</groupId>
   <artifactId>kafka-demo</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+
+  <version>1.0</version>
   <name>kafka-demo</name>
 
   <description>Demo project for Kafka and Kafka Streams</description>
