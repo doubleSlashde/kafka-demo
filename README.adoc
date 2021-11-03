@@ -11,7 +11,7 @@ Die Demonstration zeigt:
  * Schema Registry (zur Veröffentlichung der Avro-Schemata)
  * KSQL (SQL-basiertes Stream Processing via Kommandozeile)
 
-*Voraussetzung:* Java JDK 1.8 (oder höher)
+*Voraussetzung:* Java JDK 11 (oder höher)
 
 == Kafka starten
 
