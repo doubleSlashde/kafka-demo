@@ -184,7 +184,7 @@ Sie öffnen eine Bash im Kafka-Container und lassen sich die Nachrichten eines T
 
 ```
 kafka-demo/producer$ docker exec -it kafka bash
-root@kafka:/# /usr/bin/kafka-console-consumer --bootstrap-server localhost:9092 \
+root@kafka:/# /usr/bin/kafka-console-consumer --bootstrap-server kafka:9092 \
    --topic logging --from-beginning
 ```
 
