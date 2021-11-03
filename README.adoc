@@ -17,25 +17,28 @@ Die Demonstration zeigt:
 
 Eine Docker-Installation vorausgesetzt, können Sie Kafka und die weiteren benötigten Dienste (Zookeeper, Schema Registry etc.) mit der `docker-compose.yml`-Datei vom `docker`-Verzeichnis aus starten:
 
-```
+[source,shell script]
+----
 kafka-demo/docker$ docker-compose up --build -d
-```
+----
 
 == Kafka beenden
 
 Kafka und die zugehörigen Dienste werden beendet mit dem Befehl (ebenfalls im `docker`-Verzeichnis auszuführen):
 
-```
+[source,shell script]
+----
 kafka-demo/docker$ docker-compose down
-```
+----
 
 == Das Projekt bauen
 
 Das Projekt wird mit Maven (d.h. dem Maven-Wrapper) folgendendermaßen gebaut:
 
-```
+[source,shell script]
+----
 kafka-demo$ mvnw install
-```
+----
 
 Unter Windows ist statt `mvnw` jeweils `mvnw.cmd` zu verwenden. Dies gilt auch für alle nachfolgend gezeigten Maven-Kommandos.
 
@@ -57,17 +60,19 @@ Eine Java-Anwendung verarbeitet die Lognachrichten mithilfe der Kafka-Streams-AP
 
 Damit die Anwendungen auf den Kafka-Broker und die Schema-Registry im Docker-Container zugreifen können muss einmalig ein Eintrag in der `/etc/hosts` hinzugefügt werden (unter Windos: `C:\Windows\System32\drivers\etc\hosts`, Bearbeitung im Administrator-Modus). Folgender Eintrag gilt für Linux sowie Doker Desktop unter Windows 10:
 
-```
+[source]
+----
 # Kafka-Demo (Docker)
 127.0.0.1          kafka
-```
+----
 
 Wer noch mit Windows 7 und der Docker Toolbox arbeitet, muss die IP-Adresse der Docker-VM angeben. In der Regel ist dies:
 
-```
+[source]
+----
 # Kafka-Demo (Docker)
 192.168.99.100     kafka
-```
+----
 
 == Producer
 
@@ -80,9 +85,10 @@ Sie nutzt dafür das `KafkaTemplate`, das Teil der Kafka-Spring-Integration `spr
 
 Führen Sie im `producer-demo`-Verzeichnis den folgenden Befehl aus:
 
-```
+[source,shell script]
+----
 kafka-demo/producer-demo$ ../mvnw spring-boot:run
-```
+----
 
 === Consumer-Demo mit Kafka Listener
 
@@ -93,9 +99,10 @@ Die Anwendung liest die Nachrichten aus dem Topic `logging-demo` und loggt diese
 
 Führen Sie im `consumer`-Verzeichnis den folgenden Befehl aus:
 
-```
+[source,shell script]
+----
 kafka-demo/consumer$ ../mvnw spring-boot:run
-```
+----
 
 === Producer-Logging
 
@@ -105,9 +112,10 @@ Die Spring-Boot-Anwendung `KafkaLogMessageProducerDemoApp` im Modul `producer-lo
 
 Führen Sie im `producer-logging`-Verzeichnis den folgenden Befehl aus:
 
-```
+[source,shell script]
+----
 kafka-demo/producer-logging$ ../mvnw spring-boot:run
-```
+----
 
 == Streams
 
@@ -122,9 +130,10 @@ Diese Anwendung verwendet zu Demonstrationszwecken _nicht_ die Spring-Integratio
 
 Führen Sie im `streams`-Verzeichnis den folgenden Befehl aus:
 
-```
+[source,shell script]
+----
 kafka-demo/streams$ ../mvnw spring-boot:run
-```
+----
 
 === Streams-Table
 
@@ -166,9 +175,10 @@ Wollte man bei mehreren Instanzen die Summe der verarbeiteten Nachrichten insges
 
 === Streams-Table-Demo starten
 
-```
+[source,shell script]
+----
 kafka-demo/streams-table$ ../mvnw spring-boot:run
-```
+----
 
 === Demo-Anwendungen beenden
 
@@ -182,11 +192,12 @@ Um die nach Kafka geschriebenen Lognachrichten zu sehen können Sie wie folgt vo
 
 Sie öffnen eine Bash im Kafka-Container und lassen sich die Nachrichten eines Topics wie folgt ausgeben:
 
-```
+[source,shell script]
+----
 kafka-demo/producer$ docker exec -it kafka bash
 root@kafka:/# /usr/bin/kafka-console-consumer --bootstrap-server kafka:9092 \
    --topic logging --from-beginning
-```
+----
 
 Gleichermaßen können Sie sich die Inhalte der anderen Topics anzeigen lassen, indem Sie für den Parameter `--topic` statt `logging` das Topic `logging-processed` oder `logging-alerts` angeben.
 
@@ -222,7 +233,8 @@ Die Lognachrichten mit Loglevel ERROR werden dann in ein neues Topic namens `ERR
 
 Da KSQL alle Eingaben als Großschreibung interpretiert, müssen Namen von Kafka-Topics, die Kleinbuchstaben enthalten in Anführungszeichen (single quotes `'`) stehen.
 
-```
+[source,shell script]
+----
 -- Eine bash im `ksql-cli` Dockercontainer öffnen
 $ docker exec -it ksql-cli bash
 
@@ -246,6 +258,6 @@ ksql> show topics;
 
 -- Inhalt des Topics ERROR_LOGS ausgeben lassen  (abbrechen mit Strg+C)
 ksql> print ERROR_LOGS;
-```
+----
 
 Nun kann man sich die Nachrichten des neuen Topics `ERROR_LOGS` auch mit dem `kafka-console-consumer` ausgeben lassen (s.o.).
