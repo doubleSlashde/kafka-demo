@@ -33,7 +33,7 @@ class KafkaProducerDemo {
 
     private boolean running = false;
 
-    private KafkaTemplate<String, String> kafkaTemplate;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     public KafkaProducerDemo(KafkaTemplate<String, String> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
