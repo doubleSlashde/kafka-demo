@@ -226,7 +226,7 @@ Die Lognachrichten mit Loglevel ERROR werden dann in ein neues Topic namens `ERR
 
 *Voraussetzungen*
 
-* `docker-compose` muss mit den Diensten `kafka`, `ksql-server` und `ksql-cli` gestartet sein.
+* `docker-compose` muss mit den Diensten `kafka`, `ksqldb-server` und `ksql-cli` gestartet sein.
 * Die `KafkaLogMessageProducerDemoApp` muss laufen.
 
 *Hinweis*
@@ -239,10 +239,10 @@ Da KSQL alle Eingaben als Großschreibung interpretiert, müssen Namen von Kafka
 $ docker exec -it ksql-cli bash
 
 -- KSQL Command Line Interface starten
-$ ksql http://ksql-server:8088
+$ ksql http://ksqldb-server:8088
 
 -- Topic 'logging' ausgeben (abbrechen mit Strg+C)
-ksql> print 'logging';
+ksql> print logging;
 
 -- Input-Stream erzeugen der aus Topic 'logging' liest
 ksql> create stream logstream with (kafka_topic='logging', value_format='AVRO');
@@ -251,7 +251,7 @@ ksql> create stream logstream with (kafka_topic='logging', value_format='AVRO');
 ksql> create stream error_logs as select loglevel, message from logstream where loglevel='ERROR';
 
 -- Inhalt des Streams ausgeben  (abbrechen mit Strg+C)
-ksql> select * from error_logs;
+ksql> select * from error_logs emit changes;
 
 -- Kafka-Topics anzeigen lassen => Neues Topic ERROR_LOGS wurde angelegt
 ksql> show topics;
