@@ -11,7 +11,10 @@ Die Demonstration zeigt:
  * Schema Registry (zur Veröffentlichung der Avro-Schemata)
  * KSQL (SQL-basiertes Stream Processing via Kommandozeile)
 
-*Voraussetzung:* Java JDK 11 (oder höher)
+*Voraussetzungen:*
+
+* Java JDK 11 (oder höher)
+* Docker / Docker Compose
 
 == Kafka starten
 
