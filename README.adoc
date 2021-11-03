@@ -226,7 +226,7 @@ Die Lognachrichten mit Loglevel ERROR werden dann in ein neues Topic namens `ERR
 
 *Voraussetzungen*
 
-* `docker-compose` muss mit den Diensten `kafka`, `ksqldb-server` und `ksql-cli` gestartet sein.
+* `docker-compose` muss mit den Diensten `kafka`, `ksqldb-server` und `ksqldb-cli` gestartet sein.
 * Die `KafkaLogMessageProducerDemoApp` muss laufen.
 
 *Hinweis*
@@ -235,8 +235,8 @@ Da KSQL alle Eingaben als Großschreibung interpretiert, müssen Namen von Kafka
 
 [source,shell script]
 ----
--- Eine bash im `ksql-cli` Dockercontainer öffnen
-$ docker exec -it ksql-cli bash
+-- Eine bash im `ksqldb-cli` Dockercontainer öffnen
+$ docker exec -it ksqldb-cli bash
 
 -- KSQL Command Line Interface starten
 $ ksql http://ksqldb-server:8088
