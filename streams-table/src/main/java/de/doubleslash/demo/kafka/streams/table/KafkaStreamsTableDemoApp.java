@@ -1,6 +1,6 @@
 package de.doubleslash.demo.kafka.streams.table;
 
-import static io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG;
+import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG;
 import static java.util.Collections.singletonMap;
 import static org.apache.kafka.streams.StreamsConfig.APPLICATION_ID_CONFIG;
 import static org.apache.kafka.streams.StreamsConfig.BOOTSTRAP_SERVERS_CONFIG;
@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.kafka.common.serialization.Serdes;
-import org.apache.kafka.common.utils.Bytes;
 import org.apache.kafka.streams.StreamsBuilder;
 import org.apache.kafka.streams.StreamsConfig;
 import org.apache.kafka.streams.kstream.Consumed;
@@ -17,7 +16,6 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Materialized;
 import org.apache.kafka.streams.kstream.Produced;
-import org.apache.kafka.streams.state.KeyValueStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -66,13 +64,13 @@ public class KafkaStreamsTableDemoApp {
     }
 
     @Bean
-    KStream kafkaStream(StreamsBuilder streamsBuilder, SpecificAvroSerde<LogMessage> logMessageSerde) {
+    KStream<String, Long> kafkaStream(StreamsBuilder streamsBuilder, SpecificAvroSerde<LogMessage> logMessageSerde) {
         // Table holding count of log messages for each log level
         // and materialized in a kafka store
         KTable<String, Long> countTable = streamsBuilder.stream("logging",
                 Consumed.with(Serdes.String(), logMessageSerde))
                 .groupBy( (key, value) -> value.getLogLevel().toString() )
-                .count(Materialized.<String, Long, KeyValueStore<Bytes, byte[]>>as(STORE_NAME));
+                .count(Materialized.as(STORE_NAME));
 
         KStream<String, Long> countStream = countTable.toStream();
         countStream.to("logging-counts", Produced.with(Serdes.String(), Serdes.Long()));
@@ -81,11 +79,10 @@ public class KafkaStreamsTableDemoApp {
     }
 
     @Bean
-    @SuppressWarnings("unchecked")
     SpecificAvroSerde<LogMessage> logMessageSerde() {
         Map<String, String> serdeConfig =
                 singletonMap(SCHEMA_REGISTRY_URL_CONFIG, schemaRegistryUrls);
-        final SpecificAvroSerde logMessageSerde = new SpecificAvroSerde<>();
+        final SpecificAvroSerde<LogMessage> logMessageSerde = new SpecificAvroSerde<>();
         logMessageSerde.configure(serdeConfig, false);
         return logMessageSerde;
     }

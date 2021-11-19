@@ -1,7 +1,7 @@
 package de.doubleslash.demo.kafka.streams;
 
 import static de.doubleslash.demo.kafka.avro.Level.ERROR;
-import static io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG;
+import static io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG;
 import static java.util.Collections.singletonMap;
 
 import java.util.Map;
@@ -39,7 +39,7 @@ import io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde;
  */
 public class LogMessageProcessor implements AutoCloseable {
 
-    private Logger log = LoggerFactory.getLogger(LogMessageProcessor.class);
+    private static final Logger log = LoggerFactory.getLogger(LogMessageProcessor.class);
 
     @Value("${kafka.bootstrap.servers}")
     private String kafkaBootstrapServers;
@@ -99,9 +99,8 @@ public class LogMessageProcessor implements AutoCloseable {
         return props;
     }
 
-    @SuppressWarnings("unchecked")
     private SpecificAvroSerde<LogMessage> logMessageSerde() {
-        final SpecificAvroSerde logMessageSerde = new SpecificAvroSerde<>();
+        final SpecificAvroSerde<LogMessage> logMessageSerde = new SpecificAvroSerde<>();
         logMessageSerde.configure(serdeConfig(), false);
         return logMessageSerde;
     }
